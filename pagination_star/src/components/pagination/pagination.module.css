@@ -1,0 +1,37 @@
+.page {
+
+  border: 1px solid blue;
+  padding: 0.25rem 0.75rem;
+  border-radius: 11px;
+
+}
+
+.page:hover {
+  cursor: pointer;
+}
+
+.container {
+  margin: auto;
+  width: fit-content;
+  display: flex;
+  gap: 1rem;
+  flex-direction: row;
+}
+
+.buttonPagintion {
+  background-color: aqua;
+  color: red;
+  padding: 1rem 1.5rem;
+  border: 1px solid;
+  border-radius: 11px;
+}
+
+.buttonPagintion:hover {
+  cursor: pointer;
+}
+
+.buttonPagintion:disabled {
+  background-color: grey;
+  color: black;
+  cursor: not-allowed;
+}
