@@ -1,0 +1,42 @@
+.modal-wrapper {
+
+  height: 100vh;
+  width: 100vw;
+  background-color: rgb(190, 188, 188);
+  display: grid;
+  place-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+}
+
+
+.modal {
+
+  max-height: 50vh;
+  width: 70vh;
+  padding: 1rem 3rem;
+  border-radius: 33px;
+  border: 1px solid green;
+  overflow: scroll;
+  background-color: white;
+  position: relative;
+
+}
+
+.modal span {
+  position: absolute;
+  top: 7px;
+  right: 25px;
+  background-color: deeppink;
+  color: white;
+  padding: 0.15rem 0.25rem;
+  border-radius: 11px;
+  font-size: 0.65rem;
+}
+
+
+.modal span:hover {
+  cursor: pointer;
+}
