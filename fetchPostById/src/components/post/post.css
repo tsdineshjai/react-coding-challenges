@@ -1,0 +1,25 @@
+.post {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  justify-content: center;
+  align-items: center;
+  min-width: 500px;
+  border: 1px solid white;
+  min-height: 350px;
+  position: relative;
+  padding: 2rem 5rem;
+  border-radius: 23px;
+}
+
+
+input {
+  position: absolute;
+  top: 25%;
+  padding: 0.25rem 1rem;
+  border: solid transparent;
+  border-radius: 23px;
+  text-align: center;
+  background-color: aquamarine;
+
+}
