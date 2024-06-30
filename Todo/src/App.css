@@ -1,0 +1,109 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: rgb(164, 3, 89);
+}
+
+.container {
+
+  border: 1px solid white;
+  width: fit-content;
+  padding: 2rem 5rem;
+  border-radius: 11px;
+  display: flex;
+  flex-direction: column;
+}
+
+.wrapper {
+  display: grid;
+  place-items: center;
+  height: 100vh;
+}
+
+.addItem {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-around;
+  margin: 0.5rem;
+}
+
+ul {
+  padding: 1rem 2rem;
+  display: grid;
+  place-items: center;
+  gap: 1rem;
+}
+
+input {
+  box-shadow: 0 2px 6px rgba(249, 248, 248, 0.55);
+  padding: 0.25rem 1rem;
+  text-align: center;
+
+}
+
+
+li {
+  list-style-type: none;
+  text-transform: capitalize;
+  font-size: medium;
+  color: white;
+  display: grid;
+  place-items: center;
+  gap: 0.25rem;
+  min-width: 100%;
+  grid-template-columns: 3fr 1fr 1fr;
+  font-family: fantasy;
+
+}
+
+
+button {
+  padding: 0.25rem 0.65rem;
+  color: rgb(40, 38, 38);
+  background-color: antiquewhite;
+  border: 2px solid transparent;
+  border-radius: 7px;
+  box-shadow: 0 2px 6px rgba(249, 248, 248, 0.55);
+  cursor: pointer;
+
+}
+
+
+dialog {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  padding: 2rem 3rem;
+  background-color: rgb(185, 163, 154);
+
+  border-radius: 7px;
+  border: transparent;
+
+}
+
+dialog>p, button {
+
+  margin-top: 1rem;
+
+
+
+}
+
+::backdrop{
+  background-color: black;
+}
+
+.dialogContainer{
+  display: grid;
+  place-items: center;
+  gap: 1rem;
+}
+
+.dialogContainer p:nth-child(2){
+  color:rgb(47, 16, 149)
+}
