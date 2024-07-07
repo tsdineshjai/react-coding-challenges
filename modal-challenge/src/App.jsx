@@ -21,7 +21,7 @@ function App() {
 		<section>
 			<button onClick={toggleModal}>show the modal</button>
 
-			{show && <Modal toggleModal={toggleModal} />}
+			{!!show && <Modal toggleModal={toggleModal} />}
 
 			<dialog id="my-dialog">
 				<button autoFocus onClick={closeModal}>
@@ -29,7 +29,9 @@ function App() {
 				</button>
 				<p>This modal dialog has a groovy backdrop!</p>
 			</dialog>
-			<button onClick={openModal}>Show the dialog(used native dialog html element)</button>
+			<button onClick={openModal}>
+				Show the dialog(used native dialog html element)
+			</button>
 		</section>
 	);
 }
