@@ -1,0 +1,44 @@
+.boxContainer {
+
+  border: 1px solid white;
+  color: white;
+  background-color: rgba(72, 86, 74, 0.75);
+  color: black;
+  min-width: 75px;
+  min-height: 75px;
+  display: grid;
+  place-items: center;
+  transition: all 0.5s ease-in-out;
+}
+
+.showNumber {
+  background-color: rgb(58, 128, 67);
+  height: 100%;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  color: white;
+}
+
+span {
+  color: white;
+}
+
+
+.remove {
+  visibility: hidden;
+}
+
+span {
+  height: 100%;
+  width: 100%;
+  visibility: hidden;
+  display: grid;
+  place-items: center;
+}
+
+.show>span {
+  visibility: unset;
+  background-color: cadetblue;
+  color: whitesmoke;
+}
