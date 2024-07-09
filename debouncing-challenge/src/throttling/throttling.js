@@ -38,3 +38,20 @@ console.log(
 		throttleFn("alpha", "beta");
 	}, 700)
 );
+
+function throttling(fn, delay) {
+	let lastTimeInvoked = 0;
+	return (...args) => {
+		let currentTimeInvoked = Date.now();
+		if (currentTimeInvoked - lastTimeInvoked > delay) {
+			lastTimeInvoked = currentTimeInvoked;
+			fn(...args);
+		}
+		return;
+	};
+}
+function greet() {
+	return `good morning`;
+}
+
+const throttleFn2 = throttling(greet, 5000);
