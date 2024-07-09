@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+
+  <body>
+
+
+    <div class="container">
+      <button id="store">Store</button>
+    </div>
+
+
+    <script>
+      // Add an event listener for the 'storage' event
+
+
+      window.addEventListener("DOMContentLoaded", () => {
+
+        window.addEventListener("storage", (event) => {
+          console.log('Storage event triggered');
+          console.log('Key changed: ', event.key);
+          console.log('Old value: ', event.oldValue);
+          console.log('New value: ', event.newValue);
+          console.log('Storage area: ', event.storageArea);
+        });
+        const buttonRef = document.getElementById("store");
+
+        if (buttonRef) {
+          buttonRef.addEventListener("click", updateStorage);
+        } else {
+          console.error('Button with id "store" not found');
+        }
+
+        // Example function to change localStorage and trigger the event
+        function updateStorage() {
+          localStorage.setItem('exampleKey', 'iknowiknowikr');
+          console.log('LocalStorage updated');
+        }
+
+      })
+
+
+
+
+
+    </script>
+
+  </body>
+
+</html>
