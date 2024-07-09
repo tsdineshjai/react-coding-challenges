@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+
+  <body>
+
+
+    <div class="container" id="click">
+
+      <button>CLick</button>
+    </div>
+
+  </body>
+
+  <script>
+
+
+    function throttle(fn, delay) {
+
+      let timer = null; // it is set to null so that to invoke for the first time without any hassle. 
+
+      return (...args) => {
+        if (!timer) {
+          fn(...args);
+          timer = setTimeout(() => {
+            timer = null;
+          }, delay)
+        }
+        return;
+      }
+    }
+
+    function log() {
+      console.log("funciton is debounced")
+    }
+
+    const throttleFn = throttle(log, 5000)
+
+
+    /* debouncing */
+    /* 
+    it does two things
+    1. it resets existing  setTimeout fn
+    2. starts new setTimeout with a cb fn executed after a delay
+    */
+
+
+    function debouncing(fn, delay) {
+      let timer = null;
+      return (...args) => {
+        if (timer) {
+          clearInterval(timer)
+        }
+        timer = setTimeout(() => {
+          fn(...args)
+        }, delay)
+      }
+    }
+
+    const debouncedFn = debouncing(log, 5000)
+
+    const buttonRef = document.getElementById("click");
+    buttonRef.addEventListener("click", () => {
+      debouncedFn();
+    })
+
+  </script>
+
+</html>
