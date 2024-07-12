@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Key COde Finder</title>
+
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body>
+
+    <div id="container">
+
+
+      <p>Press any key on the below input to find out the key and its key code</p>
+
+      <input type="text" name="keyFinder" id="keyFinder">
+
+
+    </div>
+
+    <div class="vertical">
+
+      <div class="box">
+        <span class="name">x</span>
+        <span class="description">Close the reader view</span>
+      </div>
+      <div class="box">
+        <span class="name">x</span>
+        <span class="description">Close the reader view</span>
+      </div>
+      <div class="box">
+        <span class="name">x</span>
+        <span class="description">Close the reader view</span>
+      </div>
+    </div>
+
+
+
+
+    <div id="output" tabindex="0"></div>
+
+
+
+
+
+
+
+
+  </body>
+
+  <script>
+
+    const inputRef = document.getElementById("keyFinder");
+
+    const containerRef = document.getElementById("container");
+
+    const outputRef = document.getElementById("output")
+
+
+    inputRef.addEventListener("keydown", (e) => {
+
+      if (outputRef.firstChild) {
+        outputRef.removeChild(outputRef.firstChild)
+      }
+      const newEle = document.createElement("p");
+
+      newEle.textContent = `Key Code : ${e.keyCode} and Key is ${e.key}`;
+
+      outputRef.appendChild(newEle)
+      window.scrollTo(0, document.body.scrollHeight);
+
+
+
+    })
+
+
+
+
+  </script>
+
+
+</html>
+
