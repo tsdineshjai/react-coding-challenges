@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+
+  <body>
+
+    <body>
+      <h1>History API Example</h1>
+      <p id="content">Welcome to the home page!</p>
+      <button onclick="goToPage('about')">About</button>
+      <button onclick="goToPage('contact')">Contact</button>
+    </body>
+
+
+    <script>
+      function goToPage(page) {
+        const state = { page: page };
+        const title = '';
+        const url = page + '.html';
+
+        // Change the URL and push the state
+        history.pushState(state, title, url);
+
+        // Update the content based on the new page
+        const contentElement = document.getElementById('content');
+        if (page === 'about') {
+          contentElement.innerHTML = 'Welcome to the about page!';
+        } else if (page === 'contact') {
+          contentElement.innerHTML = 'Welcome to the contact page!';
+        } else {
+          contentElement.innerHTML = 'Welcome to the home page!';
+        }
+      }
+
+      // Handle the popstate event ,
+      window.onpopstate = function (event) {
+        const state = event.state;
+        const contentElement = document.getElementById('content');
+
+        if (state) {
+          if (state.page === 'about') {
+            contentElement.innerHTML = 'Welcome to the about page!';
+          } else if (state.page === 'contact') {
+            contentElement.innerHTML = 'Welcome to the contact page!';
+          } else {
+            contentElement.innerHTML = 'Welcome to the home page!';
+          }
+        } else {
+          contentElement.innerHTML = 'Welcome to the home page!';
+        }
+      };
+    </script>
+
+
+</html>
+
+
+<!-- 
+
+### Explanation:
+
+
+1. **JavaScript Function (`goToPage`): This basically adds the browser's Session History Stack
+   - This function takes a `page` parameter (either "about" or "contact").
+   - It creates a `state` object with the page name, an empty `title`, and a `url` corresponding to the new page.
+   - The `history.pushState(state, title, url)` method is called to add a new entry to the browser's history.
+   - The content of the `content` element is updated based on the new page.
+
+2. **Handling the `popstate` Event:** /This access the Session History Stack and retreives the content necessary
+   - The `onpopstate` event is triggered when the user navigates using the browser's back or forward buttons.
+   - The event's `state` property contains the state object associated with the history entry.
+   - The content of the `content` element is updated based on the state.
+
+With this setup, clicking the buttons changes the URL in the address bar and updates the page content without reloading the page. Navigating using the browser's back and forward buttons will also update the page content correctly.
+
+-->
