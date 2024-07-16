@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constraint validation</title>
+  </head>
+
+  <body>
+    <form>
+      <label for="ZIP">ZIP : </label>
+      <input type="text" id="ZIP" />
+      <label for="Country">Country : </label>
+      <select id="Country">
+        <option value="ch">Switzerland</option>
+        <option value="fr">France</option>
+        <option value="de">Germany</option>
+        <option value="nl">The Netherlands</option>
+      </select>
+      <input type="submit" value="Validate" />
+    </form>
+
+    <label for="FS">Select a file lesser than 75 KB</label>
+    <input type="file" name="file" id="FS">
+
+  </body>
+
+  <script src="index.js"></script>
+
+</html>
