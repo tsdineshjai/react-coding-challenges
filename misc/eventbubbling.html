@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+      #parent,
+      #outer {
+        border: 1px solid grey;
+        padding: 2rem 3rem;
+        background-color: aliceblue;
+      }
+
+      li {
+        border: 2px solid green;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div id="parent">
+      <button id="child">Click</button>
+    </div>
+
+
+    <ul id="outer">
+      <li>1</li>
+      <li>2</li>
+      <li>3</li>
+    </ul>
+
+  </body>
+
+  <script>
+
+    const parent = document.querySelector("#parent");
+    const child = document.querySelector("#child");
+
+    parent.addEventListener("click", (e) => {
+      console.log("parent element is clicked")
+    })
+
+    child.addEventListener("click", (e) => {
+      console.log("child element is clicked")
+
+      console.log(e.target.nodeName)
+      console.log(e.target)
+    })
+
+    document.querySelector("#outer").addEventListener("click", (e) => {
+
+      if (e.target && e.target.nodeName == "LI") {
+        console.log(e.target.textContent || e.target.innerHTML)
+      }
+    })
+
+
+
+
+  </script>
+
+</html>

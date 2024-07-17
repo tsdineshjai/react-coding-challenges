@@ -35,6 +35,9 @@ function reducer(state, action) {
 					type: action.op,
 				},
 			]);
+			action.setLastActionType({
+				...action,
+			});
 
 			return state - 10;
 		}
@@ -48,6 +51,9 @@ function reducer(state, action) {
 					type: action.op,
 				},
 			]);
+			action.setLastActionType({
+				...action,
+			});
 
 			return state - 1;
 		}
@@ -61,6 +67,9 @@ function reducer(state, action) {
 					type: action.op,
 				},
 			]);
+			action.setLastActionType({
+				...action,
+			});
 
 			return state + 1;
 		}
@@ -74,6 +83,9 @@ function reducer(state, action) {
 					type: action.op,
 				},
 			]);
+			action.setLastActionType({
+				...action,
+			});
 
 			return state + 10;
 		}
@@ -87,35 +99,24 @@ function reducer(state, action) {
 					type: action.op,
 				},
 			]);
+			action.setLastActionType({
+				...action,
+			});
 
 			return state + 100;
 		}
-		case "Undo": {
-			const lastAction = action.history[action.history.length - 1];
-			if (!lastAction) return state;
 
-			action.setRedoStack((prevRedoStack) => [...prevRedoStack, lastAction]);
+		case "undo": {
+			const lastHistory = action.history.at(-1);
+			if (!lastHistory) return state;
+			action.setHistory((prev) => {
+				return prev.slice(0, -1);
+			});
 
-			action.setHistory((prevHistory) =>
-				prevHistory.slice(0, prevHistory.length - 1)
-			);
+			action.setEnableRedo(false);
 
-			return lastAction.valueBefore;
+			return lastHistory.valueBefore;
 		}
-		case "Redo": {
-			const lastRedoAction = action.redoStack[action.redoStack.length - 1];
-			if (!lastRedoAction) return state;
-
-			action.setRedoStack((prevRedoStack) =>
-				prevRedoStack.slice(0, prevRedoStack.length - 1)
-			);
-
-			action.setHistory((prevHistory) => [...prevHistory, lastRedoAction]);
-
-			return lastRedoAction.valueAfter;
-		}
-		default:
-			return state;
 	}
 }
 
@@ -128,7 +129,7 @@ function App() {
 	const prevState = React.useRef(countState);
 	const [history, setHistory] = React.useState([]);
 	const [lastActionType, setLastActionType] = React.useState({});
-	const [redoStack, setRedoStack] = React.useState([]);
+	const [enableRedo, setEnableRedo] = React.useState(true);
 
 	console.log(history);
 
@@ -139,26 +140,18 @@ function App() {
 				<button
 					onClick={() =>
 						dispatch({
-							type: "Undo",
+							type: "undo",
 							history,
 							setHistory,
-							redoStack,
-							setRedoStack,
+							setEnableRedo,
 						})
 					}
 				>
 					Undo
 				</button>
 				<button
-					onClick={() =>
-						dispatch({
-							type: "Redo",
-							history,
-							setHistory,
-							redoStack,
-							setRedoStack,
-						})
-					}
+					disabled={enableRedo}
+					onClick={() => dispatch({ ...lastActionType })}
 				>
 					Redo
 				</button>
