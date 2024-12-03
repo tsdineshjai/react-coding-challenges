@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+
+  <body>
+    <ul id="parent" style="cursor: pointer;">
+      <li>Good</li>
+      <li>Morning</li>
+      <li>Fella !!!</li>
+    </ul>
+
+    <script>
+
+      /* event delegation :
+      Event delegation is a technique in JavaScript that allows you to manage events at a
+      higher level in the DOM (Document Object Model) rather than adding event listeners to individual elements.
+      This is particularly useful when dealing with dynamically added elements, as it helps to keep the code DRY
+      (Don't Repeat Yourself) and improve performance.
+
+      Instead of attaching an event listener to each child element, you attach a single event listener to a parent element.
+      The event listener then takes care of identifying which child element triggered the event
+      */
+      document.querySelectorAll("li").forEach((li) => {
+        li.addEventListener("click", (e) => {
+          e.stopPropagation()
+        })
+      })
+
+      document.getElementById("parent").addEventListener("click", function (event) {
+        if (event.target && event.target.nodeName == "LI") {
+          console.log(event.target.innerHTML)
+        }
+      })
+    </script>
+  </body>
+
+</html>
