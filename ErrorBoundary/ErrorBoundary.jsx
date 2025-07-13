@@ -11,6 +11,10 @@ class ErrorBoundary extends React.Component {
 		this.state = { hasError: true };
 	}
 
+	componentDidCatch(error, info) {
+		console.log(error, info.componentStack);
+	}
+
 	render() {
 		if (this.hasError) {
 			return <>Error has occurrred</>;
@@ -20,12 +24,21 @@ class ErrorBoundary extends React.Component {
 	}
 }
 
-
 /* 
 
 
 Wrap this component aroun the normal components  so that any error that bubbles up and 
 will be caught in this component . So that entire application wont go kaput. 
 
+
+*/
+
+/* 
+Aspect	getDerivedStateFromError	componentDidCatch
+Use for	Updating state for fallback UI	Logging and side effects
+Access to this	❌ No	✅ Yes
+Can update state?	✅ Yes (return new state)	❌ No (but people sometimes do, discouraged)
+Side effects allowed?	❌ No	✅ Yes
+React lifecycle phase	: Render phase	:   Commit phase
 
 */
