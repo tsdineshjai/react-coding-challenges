@@ -12,71 +12,63 @@ reqs:
 
 */
 
-class LruCache {
-	constructor() {
-		this.cache = new Map(); //datastructure to hold key-value pairs
-		this.capacity = 3;
-		this.freq = new Map();
+// this example is defind the LRU using Map data structure !!
+class LRUcache {
+	constructor(capacity) {
+		this.capacity = capacity;
+
+		this.cache = new Map();
 	}
+
+	// method to get a value , it is considered accessing
 
 	getValue(key) {
-		/* whenever we are trying ot access a value  , we are stored the acccessed count, so that we can find the least accessed one */
+		if (!this.cache.get(key)) return -1;
+
+		//logic is to delete the key that we gonna access and to add the key
+		//when we add, it will be the at the end of the map. which is considered as most rceently accessed.
+
+		const value = this.cache.get(key);
+
+		this.cache.delete(key);
+		this.cache.set(key, value);
+
+		return value;
+	}
+
+	setValue(key, val) {
 		if (this.cache.has(key)) {
-			if (this.freq.has(key)) {
-				this.freq.set(key, this.freq.get(key) + 1);
-			} else {
-				this.freq.set(key, 1);
-			}
-
-			return this.cache.get(key);
-		} else {
-			return -1;
+			this.cache.delete(key);
 		}
-	}
+		if (this.cache.size >= this.capacity) {
+			// what we need to do here is the delete the least accessed one once it reaches the capacity
+			// we can do by map.keys() which returns a iterator , iterator has a next() method which returns {value, done}
+			//this gets the first value.
 
-	inserKV(key, val) {
+			const leastAccessedKey = this.cache.keys().next().value;
+
+			console.log(leastAccessedKey);
+			this.cache.delete(leastAccessedKey);
+
+			console.log(`we are deleting this key: ${leastAccessedKey}`);
+		}
+
 		this.cache.set(key, val);
-
-		if (!this.cache.has(key)) {
-			this.freq.set(key, 0);
-		}
-		if (this.cache.size == this.capacity) {
-			const removableKey = this.getLeastAccessed();
-			console.log("the least accessed one is ", removableKey);
-			this.cache.delete(removableKey);
-			// if it reaches the capacity, delete the least accessed and then insert the new key-value pair !
-		}
 	}
-	getLeastAccessed() {
-		console.log(this.freq);
-		const valuesOfFreq = this.freq.values();
-		const leastValue = Math.min(...valuesOfFreq);
-		let leastAccessedKey;
-		for (let k of this.freq.keys()) {
-			if (this.freq.get(k) == leastValue) {
-				leastAccessedKey = k;
-				break;
-			}
-		}
 
-		console.log(leastAccessedKey);
-		return leastAccessedKey;
+	printValues() {
+		console.log(...this.cache.entries());
 	}
 }
 
-const cach = new LruCache();
+const lru = new LRUcache(3);
 
-cach.inserKV("match", "eng vs ind");
-cach.inserKV("motivation", "dsicipline you should master");
-cach.inserKV("motto", "you gotta believe in yourself");
-cach.inserKV("begaraadsfsdf", "calmaaaa");
-cach.inserKV("lop", "lopioei");
+lru.setValue("A", "apples");
+lru.setValue("b", "bananans");
+lru.setValue("c", "citrus fruits");
+lru.setValue("d", "dandilliosns");
 
-cach.getValue("match");
-cach.getValue("motivation");
-cach.getValue("motivation");
-cach.getValue("motto");
-cach.getValue("motto");
+lru.printValues();
+console.log(lru.cache.size);
 
-console.log(cach.getLeastAccessed());
-console.log(cach.cache.size);
+
