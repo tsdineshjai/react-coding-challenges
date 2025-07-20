@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infinite Scroll</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+      }
+
+      * {
+        scroll-behavior: smooth;
+      }
+
+      #itemList {
+        list-style: none;
+        padding: 0;
+      }
+
+      #itemList li {
+        background-color: #f0f0f0;
+        margin-bottom: 10px;
+        padding: 15px;
+        border-radius: 5px;
+      }
+
+      #loading {
+        text-align: center;
+        padding: 20px;
+        font-style: italic;
+        color: #888;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Infinite Scroll Example</h1>
+    <ul id="itemList">
+    </ul>
+    <div id="loading" style="display: none;">Loading more items...</div>
+    <script>
+
+
+      let counter = 1
+
+      const ulTag = document.getElementById("itemList");
+      const loadingRef = document.getElementById("loading");
+
+      let isLoading = false; // Flag to prevent multiple concurrent loads
+      let hasMoreItems = true;
+
+
+      async function addItems() {
+
+        if (isLoading || !hasMoreItems) return;
+
+
+        isLoading = true;
+        loadingRef.style.display = "block";
+        try {
+
+          await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate 800ms API call
+
+          const array = Array.from({ length: 18 }, (_, i) => counter++);
+
+          array.forEach((item) => {
+            const child = document.createElement("li")
+            child.innerText = item;
+            ulTag.append(child)
+          })
+
+
+        } catch (e) {
+          console.log(e)
+        } finally {
+          isLoading = false; // Reset loading flag
+          loadingRef.style.display = "none";
+        }
+      }
+
+
+      const deboundFn = debounce(addItems, 600);
+      deboundFn();
+
+
+
+      let scrollProgress;
+      document.addEventListener("scroll", () => {
+
+        const visibleHeight = window.innerHeight;
+        const scrollHeight = document.body.scrollHeight;
+        const scrolledHeight = window.scrollY;
+        scrollProgress = Math.floor(((visibleHeight + scrolledHeight) / scrollHeight) * 100);
+        if (scrollProgress > 85) {
+          deboundFn();
+        }
+      })
+
+      function debounce(fn, delay) {
+        let timerID;
+        return (...args) => {
+          clearTimeout(timerID);
+          timerID = setTimeout(() => {
+            fn(...args)
+          }, delay)
+        }
+      }
+
+    </script>
+  </body>
+
+</html>
