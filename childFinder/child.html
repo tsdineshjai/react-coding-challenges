@@ -1,0 +1,66 @@
+<!-- 
+The document.getElementsByTagName method returns all child elements with a given tag name. 
+Implement your own version of this as a function that takes a node and a string (the tag name) as arguments and 
+returns an array containing all descendant element nodes with the given tag name. Your function should go through the document itself. 
+It may not use a method like querySelectorAll to do the work.
+
+To find the tag name of an element, use its nodeName property. 
+But note that this will return the tag name in all uppercase. Use the toLowerCase or toUpperCase string methods to compensate for this. 
+
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+
+  <body>
+
+
+    <div id="container">
+
+      <p>its a p</p>
+      <button>Its a button</button>
+      <span>its a span</span>
+
+    </div>
+
+    <script>
+
+
+      const node = document.getElementById("container");
+
+
+
+
+      function childFinderWithSpecificNode(node, type) {
+
+
+        let result = [];
+        for (let child of node.children) {
+          const nodeType = child.nodeName.toLowerCase();
+
+          if (nodeType == type) {
+            result.push(child);
+          }
+
+        }
+
+        return result
+
+      }
+
+      console.log(childFinderWithSpecificNode(node, "p"))
+      console.log(childFinderWithSpecificNode(node, "span"))
+      console.log(childFinderWithSpecificNode(node, "button"))
+
+    </script>
+
+  </body>
+
+</html>

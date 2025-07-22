@@ -1,1 +1,1 @@
-console.log(myMap.size);
+console.log(map);

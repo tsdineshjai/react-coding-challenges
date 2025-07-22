@@ -71,4 +71,26 @@ lru.setValue("d", "dandilliosns");
 lru.printValues();
 console.log(lru.cache.size);
 
+/* 
+COmplexity !
 
+.get(key) → O(1)
+
+.set(key, value) → not strictly O(1) because:
+
+map.delete(key) → O(1)
+map.set(key, value) → O(1)
+
+BUT:
+Evicting oldest → this.map.keys().next().value → O(1) in practice, but iterator’s next() is technically O(1) in V8, but can be amortized O(N) in some engines.
+Order management → relies on Map insertion order, which involves internal rehashing when capacity increases, NOT strictly O(1) guaranteed under the hood.
+
+Real LRU (with Doubly Linked List + Map):
+
+| Operation     | Time Complexity | Why                                                               |
+| ------------- | --------------- | ----------------------------------------------------------------- |
+| `get()`       | O(1)            | Direct Map lookup, node repositioning via linked list is O(1).    |
+| `put()`       | O(1)            | Map access O(1), remove/insert node O(1).                         |
+| **Evict LRU** | O(1)            | Tail pointer in doubly linked list always points to least recent. |
+
+*/

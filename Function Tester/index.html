@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>talksAbout Function Tester</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Custom styles for better readability and aesthetics */
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f0f4f8;
+        /* Light blue-gray background */
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        /* Align to top for better content flow */
+        min-height: 100vh;
+        padding: 2rem;
+      }
+
+      .container {
+        background-color: #ffffff;
+        padding: 2.5rem;
+        border-radius: 1rem;
+        /* More rounded corners */
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        /* Softer shadow */
+        max-width: 800px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      h1,
+      h2 {
+        color: #2c3e50;
+        /* Darker blue for headings */
+        font-weight: 700;
+      }
+
+      .code-block {
+        background-color: #f8fafc;
+        /* Lighter background for code */
+        border-left: 4px solid #3b82f6;
+        /* Blue border */
+        padding: 1rem;
+        border-radius: 0.5rem;
+        font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+        font-size: 0.9em;
+        overflow-x: auto;
+      }
+
+      .sample-dom-preview {
+        border: 1px dashed #cbd5e1;
+        /* Dashed border for visual distinction */
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        background-color: #f0f4f8;
+        color: #475569;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+      }
+
+      input[type="text"] {
+        flex-grow: 1;
+        padding: 0.75rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      input[type="text"]:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+      }
+
+      button {
+        background-color: #3b82f6;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        transition: background-color 0.2s, transform 0.1s;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      button:hover {
+        background-color: #2563eb;
+        transform: translateY(-1px);
+      }
+
+      button:active {
+        transform: translateY(0);
+        box-shadow: none;
+      }
+
+      .result {
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+      }
+
+      .result.true {
+        background-color: #d1fae5;
+        color: #065f46;
+      }
+
+      .result.false {
+        background-color: #fee2e2;
+        color: #991b1b;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1 class="text-3xl mb-4 text-center">`talksAbout` Function Tester</h1>
+
+      <p class="text-gray-700">This page demonstrates the `talksAbout` function. Enter a string below to see if it
+        exists within the sample HTML content.</p>
+
+      <h2 class="text-xl mt-4">The `talksAbout` Function:</h2>
+      <pre class="code-block"><code>function talksAbout(node, string) {
+  if (node.nodeType == Node.ELEMENT_NODE) {
+    for (let child of node.childNodes) {
+      if (talksAbout(child, string)) {
+        return true; // If a child (or its descendants) contains the string, we found it!
+      }
+    }
+    return false; // If no child contains the string, then this element doesn't "talk about" it
+  } else if (node.nodeType == Node.TEXT_NODE) {
+    // For text nodes, directly check if its value contains the string
+    return node.nodeValue.indexOf(string) > -1;
+  }
+}</code></pre>
+
+      <h2 class="text-xl mt-4">Sample HTML Content:</h2>
+      <div id="sampleContent" class="sample-dom-preview">
+        <p>This is a paragraph about <strong>JavaScript</strong> and web development.</p>
+        <div>
+          <p>Inside a div, we have another paragraph.</p>
+          <ul>
+            <li>Item One</li>
+            <li>Item Two: Contains the word <span style="color: #ef4444;">"example"</span>.</li>
+            <li>Item Three</li>
+          </ul>
+          <span>A simple span.</span>
+        </div>
+        <p>The quick brown fox jumps over the lazy dog.</p>
+        <p>Let's talk about <a href="#">programming</a> and algorithms.</p>
+      </div>
+
+      <h2 class="text-xl mt-4">Test the Function:</h2>
+      <div class="input-group">
+        <input type="text" id="searchString"
+          placeholder="Enter string to search for (e.g., 'JavaScript', 'example', 'fox')">
+        <button id="testButton">Test</button>
+      </div>
+
+      <div id="resultDisplay" class="result hidden"></div>
+
+    </div>
+
+    <script>
+      // The talksAbout function (copied from your prompt)
+      function talksAbout(node, string) {
+        if (node.nodeType == Node.ELEMENT_NODE) {
+          for (let child of node.childNodes) {
+            // Recursive call: If any child (or its descendants) talks about the string,
+            // immediately return true and stop further checks for this node.
+            if (talksAbout(child, string)) {
+              return true;
+            }
+          }
+          // If the loop finishes and no child returned true,
+          // it means this element and its descendants do not contain the string.
+          return false;
+        } else if (node.nodeType == Node.TEXT_NODE) {
+          // For a text node, check if its content directly contains the string.
+          // indexOf returns -1 if the string is not found, otherwise it returns the starting index (>= 0).
+          return node.nodeValue.indexOf(string) > -1;
+        }
+        // If the node is neither an ELEMENT_NODE nor a TEXT_NODE (e.g., comment, document, etc.),
+        // it cannot contain the string in a way we're checking, so return false.
+        return false;
+      }
+
+      // Get references to DOM elements
+      const sampleContentDiv = document.getElementById('sampleContent');
+      const searchStringInput = document.getElementById('searchString');
+      const testButton = document.getElementById('testButton');
+      const resultDisplay = document.getElementById('resultDisplay');
+
+      // Event listener for the test button
+      testButton.addEventListener('click', () => {
+        const searchString = searchStringInput.value;
+        if (searchString.trim() === '') {
+          resultDisplay.textContent = 'Please enter a string to search.';
+          resultDisplay.className = 'result false'; // Use false style for warnings
+          resultDisplay.classList.remove('hidden');
+          return;
+        }
+
+        // Call the talksAbout function with the sample content's root node
+        const result = talksAbout(sampleContentDiv, searchString);
+
+        // Display the result
+        resultDisplay.classList.remove('hidden', 'true', 'false'); // Reset classes
+        if (result) {
+          resultDisplay.textContent = `Result: TRUE! The content talks about "${searchString}".`;
+          resultDisplay.classList.add('true');
+        } else {
+          resultDisplay.textContent = `Result: FALSE. The content does NOT talk about "${searchString}".`;
+          resultDisplay.classList.add('false');
+        }
+      });
+    </script>
+  </body>
+
+</html>
