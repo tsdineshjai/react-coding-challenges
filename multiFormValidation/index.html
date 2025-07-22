@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        height: 100vh;
+      }
+
+      .container {
+        height: inherit;
+        display: grid;
+        place-items: center;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+
+
+        & .formField {
+
+          display: flex;
+          flex-direction: column;
+          margin-top: 0.25rem;
+          gap: 5px;
+
+        }
+
+        & input,
+        button {
+          padding: 0.75rem 1rem;
+          border-radius: 12px;
+        }
+
+        & button:hover {
+          background-color: rgba(105, 104, 104, 0.9);
+          cursor: pointer;
+          color: white;
+        }
+
+
+        & .error-style {
+          font-weight: lighter;
+          color: rgb(126, 8, 26);
+          font-family: Georgia, 'Times New Roman', Times, serif;
+          font-size: small;
+          margin: 0.5rem 0;
+          text-align: center;
+
+        }
+
+
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <form>
+        <div class="formField">
+          <label for="username">Username</label>
+          <input required type="text" name="username" id="username">
+          <p id="error-username" class="error-style"></p>
+        </div>
+        <div class="formField">
+          <label for="email">Email</label>
+          <input required type="email" name="email" id="email">
+          <p id="error-email" class="error-style"></p>
+        </div>
+        <div class="formField">
+          <label for="password">Password</label>
+          <input required type="password" name="password" id="password">
+          <p id="error-password" class="error-style"></p>
+        </div>
+        <div class="formField">
+          <label for="confirm-password">Confirm Password</label>
+          <input required type="password" name="confirm-password" id="confirm-password">
+          <p id="error-confirmPassword" class="error-style"></p>
+        </div>
+        <button type="submit" disabled>Submit</button>
+      </form>
+    </div>
+
+
+    <script>
+
+      document.addEventListener("submit", handleSubmit)
+
+
+      function handleSubmit(e) {
+
+
+        e.preventDefault();
+        const formData = new FormData(e.target);
+
+        const username = formData.get("username");
+
+        const email = formData.get("email");
+
+        const password = formData.get("password");
+
+        console.log(username, email, password);
+
+      }
+
+
+      function enableButton() {
+
+        const pList = document.getElementsByTagName("p");
+
+        const button = document.getElementsByTagName("button")[0];
+
+        let isValid = true;
+
+        for (let p of pList) {
+
+          if (p.innerHTML) {
+            isValid = false;
+            break;
+          }
+
+        }
+
+        if (isValid) {
+          button.removeAttribute("disabled");
+        } else {
+
+          button.setAttribute("disabled", "true");
+
+
+        }
+      }
+
+
+
+
+      const inputList = document.getElementsByTagName("input");
+
+      function userNameValidation(e) {
+
+        //do username valiation
+
+        let regex = /^[a-zA-Z0-9_+$]{5,}$/g;
+
+        if (!regex.test(e.target.value)) {
+          document.getElementById("error-username").innerHTML = "username is invalid"
+        } else {
+          document.getElementById("error-username").innerHTML = ""
+        }
+      }
+
+      function emailValidation(e) {
+
+        let regex = /^[a-zA-Z0-9$#]+\@[a-zA-Z]+\.[a-zA-Z]{3,}$/g;
+
+        if (!regex.test(e.target.value)) {
+          document.getElementById("error-email").innerHTML = "Please enter a valid email";
+        } else {
+          document.getElementById("error-email").innerHTML = "";
+        }
+
+      }
+
+      function passwordValidation(e) {
+
+        let regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,15}$/;
+        if (!regex.test(e.target.value)) {
+          document.getElementById("error-password").innerHTML = "Please enter a valid password";
+        } else {
+          document.getElementById("error-password").innerHTML = "";
+        }
+      }
+
+      function confirmPassword(e) {
+
+
+        const password = document.getElementById("password").value;
+
+        console.log(password)
+
+        if (e.target.value != password || password == "") {
+
+          console.log(document.getElementById("error-confirmPassword"))
+
+          document.getElementById("error-confirmPassword").innerHTML = "passwords dont match";
+
+
+        } else {
+
+          document.getElementById("error-confirmPassword").innerHTML = "";
+
+        }
+
+
+      }
+
+      for (let input of inputList) {
+
+
+        input.addEventListener('input', (e) => {
+
+          if (e.target.name == "username") {
+            userNameValidation(e);
+          }
+
+          if (e.target.name == "email") {
+            emailValidation(e);
+          }
+
+          if (e.target.name == "password") {
+
+            passwordValidation(e);
+          }
+          if (e.target.name == "confirm-password") {
+
+            confirmPassword(e);
+          }
+
+          enableButton()
+        })
+        input.addEventListener('blur', (e) => {
+
+          if (e.target.name == "username") {
+            userNameValidation(e);
+          }
+
+          if (e.target.name == "email") {
+            emailValidation(e);
+          }
+
+          if (e.target.name == "password") {
+
+            passwordValidation(e);
+          }
+          if (e.target.name == "confirm-password") {
+
+            confirmPassword(e);
+          }
+        })
+
+
+
+
+
+      }
+
+    </script>
+  </body>
+
+</html>
