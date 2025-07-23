@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgb(176, 166, 166);
+      }
+
+      .container {
+        background-color: white;
+        padding: 5px 1rem;
+        border-radius: 25px;
+        position: relative;
+
+
+      }
+
+      .input {
+
+        padding: 0.15rem 0.25rem;
+        color: black;
+      }
+
+      input {
+        border: none;
+
+        &:focus {
+          outline: none;
+        }
+      }
+
+      span {
+
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+
+      .listOfOptions {
+        border: 1px solid grey;
+        list-style-type: none;
+        position: absolute;
+        margin-top: 5px;
+        background-color: white;
+        width: 85%;
+
+        &.visible {
+          visibility: hidden;
+        }
+      }
+
+
+      li {
+        padding: 3px 7px;
+
+        &:hover {
+          background-color: steelblue;
+          cursor: pointer;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div class="container">
+
+
+      <div class="input">
+        <input type="search" id="selectedOne" placeholder="select from this options">
+        <span id="downArrow">↓</span>
+      </div>
+
+      <div class="listOfOptions visible">
+        <li>Apple</li>
+        <li>Orange</li>
+        <li>Citrus</li>
+      </div>
+    </div>
+
+
+    <script>
+
+      const selectRef = document.getElementById("downArrow");
+      const listRif = document.querySelector(".listOfOptions");
+
+
+      selectRef.addEventListener('click', () => {
+        listRif.classList.toggle("visible")
+
+      })
+
+      console.log(listRif.children);
+
+      for (let child of listRif.children) {
+
+        child.addEventListener("click", (e) => {
+          const childContent = child.textContent;
+
+          console.log(childContent)
+
+          const inputRef = document.getElementById("selectedOne");
+
+          inputRef.value = childContent;
+
+          console.log(inputRef)
+          listRif.classList.toggle("visible")
+
+
+
+        })
+      }
+
+
+    </script>
+
+
+
+
+  </body>
+
+</html>

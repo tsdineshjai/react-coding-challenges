@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Select Dropdown</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: rgb(176, 166, 166);
+        font-family: sans-serif;
+      }
+
+      .custom-select-wrapper {
+        position: relative;
+        width: 200px;
+        /* Example width */
+      }
+
+      .custom-select-container {
+        background-color: white;
+        padding: 5px 1rem;
+        border-radius: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        border: 1px solid #ccc;
+      }
+
+      .custom-select-input {
+        border: none;
+        outline: none;
+        flex-grow: 1;
+        padding: 0.15rem 0.25rem;
+        color: black;
+        cursor: pointer;
+        /* To indicate it's clickable, even if readonly */
+        background-color: transparent;
+        /* Ensure it doesn't hide parent background */
+      }
+
+      .custom-select-arrow {
+        font-size: 1.2rem;
+        line-height: 1;
+        transition: transform 0.2s ease-in-out;
+        pointer-events: none;
+        /* Allows click to pass through to the container */
+      }
+
+      .custom-select-container.is-open .custom-select-arrow {
+        transform: rotate(180deg);
+      }
+
+      .custom-options-list {
+        border: 1px solid grey;
+        list-style-type: none;
+        position: absolute;
+        margin-top: 5px;
+        background-color: white;
+        width: 100%;
+        /* Match parent width */
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        /* Ensure it's above other content */
+
+        display: none;
+        /* Hidden by default */
+        max-height: 200px;
+        /* Example: add scroll if too many options */
+        overflow-y: auto;
+        /* Enable scroll */
+      }
+
+      .custom-options-list.is-open {
+        display: block;
+        /* Show when open */
+      }
+
+      .custom-options-list li {
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+
+      .custom-options-list li:hover,
+      .custom-options-list li.selected {
+        background-color: steelblue;
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div class="custom-select-wrapper">
+      <div class="custom-select-container" role="combobox" aria-haspopup="listbox" aria-expanded="false" tabindex="0">
+        <input type="text" id="selectedOne" class="custom-select-input" placeholder="Select an option" readonly>
+        <span class="custom-select-arrow" id="downArrow">↓</span>
+      </div>
+
+      <ul class="custom-options-list" role="listbox">
+        <li role="option" data-value="apple">Apple</li>
+        <li role="option" data-value="orange">Orange</li>
+        <li role="option" data-value="citrus">Citrus</li>
+        <li role="option" data-value="banana">Banana</li>
+        <li role="option" data-value="grape">Grape</li>
+        <li role="option" data-value="kiwi">Kiwi</li>
+      </ul>
+    </div>
+
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const selectContainer = document.querySelector(".custom-select-container");
+        const selectedInput = document.getElementById("selectedOne");
+        const optionsList = document.querySelector(".custom-options-list");
+        const downArrow = document.getElementById("downArrow");
+
+        // Toggle dropdown visibility
+        selectContainer.addEventListener('click', () => {
+          const isOpen = optionsList.classList.toggle("is-open");
+          console.log(isOpen)
+          selectContainer.classList.toggle("is-open", isOpen); // Sync container class
+          selectContainer.setAttribute('aria-expanded', isOpen);
+        });
+
+        // Handle option selection using event delegation
+        optionsList.addEventListener('click', (event) => {
+          const clickedOption = event.target.closest('li[role="option"]');
+          if (clickedOption) {
+            // Remove 'selected' class from previously selected option
+            const currentlySelected = optionsList.querySelector('.selected');
+            if (currentlySelected) {
+              currentlySelected.classList.remove('selected');
+              currentlySelected.setAttribute('aria-selected', 'false');
+            }
+
+            // Set new selected option
+            selectedInput.value = clickedOption.textContent;
+            clickedOption.classList.add('selected');
+            clickedOption.setAttribute('aria-selected', 'true');
+
+            // Close the dropdown
+            optionsList.classList.remove("is-open");
+            selectContainer.classList.remove("is-open");
+            selectContainer.setAttribute('aria-expanded', 'false');
+            selectContainer.focus(); // Return focus to the custom select
+          }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (event) => {
+          if (!selectContainer.contains(event.target) && !optionsList.contains(event.target)) {
+            optionsList.classList.remove("is-open");
+            selectContainer.classList.remove("is-open");
+            selectContainer.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        // Optional: Basic keyboard navigation for the combobox itself
+        selectContainer.addEventListener('keydown', (event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault(); // Prevent default space/enter behavior
+            selectContainer.click(); // Simulate click to open/close
+          } else if (event.key === 'Escape') {
+            if (optionsList.classList.contains('is-open')) {
+              optionsList.classList.remove('is-open');
+              selectContainer.classList.remove('is-open');
+              selectContainer.setAttribute('aria-expanded', 'false');
+            }
+          }
+        });
+      });
+    </script>
+
+  </body>
+
+</html>
