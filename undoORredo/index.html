@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undo/Redo Text Editor</title>
+    <style>
+      #editor {
+        width: 400px;
+        height: 200px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        font-size: 16px;
+        margin-bottom: 10px;
+        resize: vertical;
+        /* Allow vertical resizing */
+      }
+
+      button {
+        padding: 8px 15px;
+        margin-right: 5px;
+        cursor: pointer;
+      }
+
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2>Simple Text Editor with Undo/Redo</h2>
+    <textarea id="editor"></textarea>
+    <div>
+      <button id="undoBtn">Undo</button>
+      <button id="redoBtn">Redo</button>
+    </div>
+
+    <script>
+      const undoButton = document.getElementById("undoBtn");
+      const redoButton = document.getElementById("redoBtn");
+      const textArea = document.getElementById("editor");
+
+      let history = ['']; // Initialize with an empty state
+      let historyPointer = 0; // Points to the current state in the history array
+
+      // Function to update the UI (textarea value and button states)
+      function updateEditor() {
+        textArea.value = history[historyPointer];
+        undoButton.disabled = historyPointer === 0;
+        redoButton.disabled = historyPointer === history.length - 1;
+      }
+
+      // Save the current state
+      function saveState() {
+        const currentValue = textArea.value;
+
+        // If the current value is the same as the last saved state, don't save
+        if (currentValue === history[historyPointer]) {
+          return;
+        }
+
+        // If we are not at the end of the history (meaning we've undone some actions),
+        // clear the "redo" history from the current pointer onwards.
+        if (historyPointer < history.length - 1) {
+          history = history.slice(0, historyPointer + 1);
+        }
+
+        history.push(currentValue);
+        historyPointer = history.length - 1; // Move pointer to the newly added state
+        updateEditor(); // Update button states immediately after saving
+      }
+
+      // Debounce function to limit how often saveState is called
+      function debounce(func, delay) {
+        let timeout;
+        return function (...args) {
+          const context = this;
+          clearTimeout(timeout);
+          timeout = setTimeout(() => func.apply(context, args), delay);
+        };
+      }
+
+      const debouncedSaveState = debounce(saveState, 300); // Save state after 300ms of inactivity
+
+      // --- Event Listeners ---
+
+      textArea.addEventListener("input", debouncedSaveState);
+      textArea.addEventListener("paste", saveState); // Save immediately on paste
+
+      undoButton.addEventListener("click", () => {
+        if (historyPointer > 0) {
+          historyPointer--;
+          updateEditor();
+        }
+      });
+
+      redoButton.addEventListener("click", () => {
+        if (historyPointer < history.length - 1) {
+          historyPointer++;
+          updateEditor();
+        }
+      });
+
+      // Initial setup
+      updateEditor();
+    </script>
+  </body>
+
+</html>
