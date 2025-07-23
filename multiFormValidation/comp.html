@@ -1,0 +1,356 @@
+<!-- this is computer version, not mine -->
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Form Validation</title>
+
+    <style>
+      /* Universal reset for consistency */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      /* Full viewport height for body to center content */
+      body {
+        height: 100vh;
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        display: flex;
+        /* Use flexbox for centering */
+        justify-content: center;
+        align-items: center;
+      }
+
+      .container {
+        /* No need for height: inherit; as body handles centering */
+        padding: 2rem;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* Center form elements horizontally */
+        gap: 1.5rem;
+        /* Increased gap for better spacing */
+      }
+
+      .formField {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        /* Make form fields take full width of form */
+        max-width: 300px;
+        /* Limit max-width for better aesthetics */
+        gap: 0.25rem;
+        /* Smaller gap between label and input */
+      }
+
+      label {
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 0.25rem;
+        /* Space below label */
+      }
+
+      input {
+        padding: 0.75rem 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        /* Slightly smaller border-radius for inputs */
+        font-size: 1rem;
+        width: 100%;
+        /* Ensure input takes full width of formField */
+      }
+
+      input:focus {
+        outline: none;
+        border-color: #007bff;
+        /* Highlight on focus */
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+      }
+
+      button {
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-top: 1rem;
+        /* Space above the button */
+      }
+
+      button:hover:not([disabled]) {
+        background-color: #0056b3;
+      }
+
+      button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+      }
+
+      /* Error message styling */
+      .error-message {
+        font-weight: normal;
+        /* Changed from lighter as normal is more common */
+        color: #dc3545;
+        /* Bootstrap-like red for errors */
+        font-family: Georgia, 'Times New Roman', Times, serif;
+        font-size: 0.875rem;
+        /* Slightly smaller font for errors */
+        text-align: left;
+        /* Align error text with input */
+        margin-top: 0.25rem;
+        /* Space above error message */
+        min-height: 1.25rem;
+        /* Reserve space to prevent layout shifts */
+      }
+
+      /* Styling for invalid inputs */
+      input.invalid {
+        border-color: #dc3545;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div class="container">
+      <form id="registrationForm" novalidate>
+        <div class="formField">
+          <label for="username">Username</label>
+          <input required type="text" name="username" id="username" autocomplete="username">
+          <p id="error-username" class="error-message" aria-live="polite"></p>
+        </div>
+        <div class="formField">
+          <label for="email">Email</label>
+          <input required type="email" name="email" id="email" autocomplete="email">
+          <p id="error-email" class="error-message" aria-live="polite"></p>
+        </div>
+        <div class="formField">
+          <label for="password">Password</label>
+          <input required type="password" name="password" id="password" autocomplete="new-password">
+          <p id="error-password" class="error-message" aria-live="polite"></p>
+        </div>
+        <div class="formField">
+          <label for="confirm-password">Confirm Password</label>
+          <input required type="password" name="confirm-password" id="confirm-password" autocomplete="new-password">
+          <p id="error-confirmPassword" class="error-message" aria-live="polite"></p>
+        </div>
+        <button type="submit" id="submitButton" disabled>Submit</button>
+      </form>
+    </div>
+
+    <script>
+      // --- DOM Element References ---
+      const form = document.getElementById('registrationForm');
+      const submitButton = document.getElementById('submitButton');
+
+      const usernameInput = document.getElementById('username');
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+      const confirmPasswordInput = document.getElementById('confirm-password');
+
+      const errorUsername = document.getElementById('error-username');
+      const errorEmail = document.getElementById('error-email');
+      const errorPassword = document.getElementById('error-password');
+      const errorConfirmPassword = document.getElementById('error-confirmPassword');
+
+      // --- Validation Regexes ---
+      const USERNAME_REGEX = /^[a-zA-Z0-9_]{5,}$/; // Removed $ and + as special characters for typical usernames
+      const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // More common and robust email regex
+      // Password: At least one uppercase, one digit, one special char, 8-15 chars
+      const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+={}[\]:;<>,.?~\\-]).{8,15}$/;
+      // Added more common special characters, you can customize this set.
+
+      // --- Helper Function to Display/Clear Errors ---
+      /**
+       * Sets an error message for a given input field.
+       * @param {HTMLElement} inputElement - The input field element.
+       * @param {HTMLElement} errorElement - The paragraph element to display the error.
+       * @param {string} message - The error message to display.
+       */
+      function setError(inputElement, errorElement, message) {
+        errorElement.textContent = message;
+        inputElement.classList.add('invalid'); // Add a class for styling
+        inputElement.setAttribute('aria-invalid', 'true'); // A11y attribute
+        inputElement.setAttribute('aria-describedby', errorElement.id); // Link input to error message
+      }
+
+      /**
+       * Clears the error message for a given input field.
+       * @param {HTMLElement} inputElement - The input field element.
+       * @param {HTMLElement} errorElement - The paragraph element where the error was displayed.
+       */
+      function clearError(inputElement, errorElement) {
+        errorElement.textContent = '';
+        inputElement.classList.remove('invalid'); // Remove styling class
+        inputElement.removeAttribute('aria-invalid'); // Remove A11y attribute
+        inputElement.removeAttribute('aria-describedby'); // Remove A11y link
+      }
+
+      // --- Individual Validation Functions ---
+      function validateUsername() {
+        const value = usernameInput.value.trim(); // .trim() removes whitespace from both ends
+        if (!value) {
+          setError(usernameInput, errorUsername, 'Username cannot be empty.');
+          return false;
+        } else if (!USERNAME_REGEX.test(value)) {
+          setError(usernameInput, errorUsername, 'Username must be 5+ alphanumeric characters or underscores.');
+          return false;
+        } else {
+          clearError(usernameInput, errorUsername);
+          return true;
+        }
+      }
+
+      function validateEmail() {
+        const value = emailInput.value.trim();
+        if (!value) {
+          setError(emailInput, errorEmail, 'Email cannot be empty.');
+          return false;
+        } else if (!EMAIL_REGEX.test(value)) {
+          setError(emailInput, errorEmail, 'Please enter a valid email address (e.g., user@example.com).');
+          return false;
+        } else {
+          clearError(emailInput, errorEmail);
+          return true;
+        }
+      }
+
+      function validatePassword() {
+        const value = passwordInput.value; // Passwords are sensitive to trim() if leading/trailing spaces are allowed
+        if (!value) {
+          setError(passwordInput, errorPassword, 'Password cannot be empty.');
+          return false;
+        } else if (!PASSWORD_REGEX.test(value)) {
+          setError(passwordInput, errorPassword,
+            'Password must be 8-15 characters, including uppercase, a number, and a special character.');
+          return false;
+        } else {
+          clearError(passwordInput, errorPassword);
+          return true;
+        }
+      }
+
+      function validateConfirmPassword() {
+        const passwordValue = passwordInput.value;
+        const confirmPasswordValue = confirmPasswordInput.value;
+
+        if (!confirmPasswordValue) {
+          setError(confirmPasswordInput, errorConfirmPassword, 'Confirm password cannot be empty.');
+          return false;
+        } else if (confirmPasswordValue !== passwordValue) {
+          setError(confirmPasswordInput, errorConfirmPassword, 'Passwords do not match.');
+          return false;
+        } else {
+          clearError(confirmPasswordInput, errorConfirmPassword);
+          return true;
+        }
+      }
+
+      // --- Master Validation Function ---
+      function validateAllFields() {
+        // Run all validations and store their results
+        const isUsernameValid = validateUsername();
+        const isEmailValid = validateEmail();
+        const isPasswordValid = validatePassword();
+        const isConfirmPasswordValid = validateConfirmPassword(); // Call it last as it depends on password
+
+        // Return true only if ALL individual validations are true
+        return isUsernameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid;
+      }
+
+      // --- Enable/Disable Submit Button ---
+      function updateSubmitButtonState() {
+        submitButton.disabled = !validateAllFields(); // Button enabled if all fields are valid
+      }
+
+      // --- Event Listeners ---
+
+      // Input events for real-time validation feedback
+      usernameInput.addEventListener('input', () => {
+        validateUsername();
+        updateSubmitButtonState();
+      });
+
+      emailInput.addEventListener('input', () => {
+        validateEmail();
+        updateSubmitButtonState();
+      });
+
+      passwordInput.addEventListener('input', () => {
+        validatePassword();
+        // Re-validate confirm password whenever the main password changes
+        validateConfirmPassword();
+        updateSubmitButtonState();
+      });
+
+      confirmPasswordInput.addEventListener('input', () => {
+        validateConfirmPassword();
+        updateSubmitButtonState();
+      });
+
+      // Blur events for final validation check when leaving a field
+      usernameInput.addEventListener('blur', () => {
+        validateUsername();
+        updateSubmitButtonState();
+      });
+
+      emailInput.addEventListener('blur', () => {
+        validateEmail();
+        updateSubmitButtonState();
+      });
+
+      passwordInput.addEventListener('blur', () => {
+        validatePassword();
+        // Re-validate confirm password on blur of main password
+        validateConfirmPassword();
+        updateSubmitButtonState();
+      });
+
+      confirmPasswordInput.addEventListener('blur', () => {
+        validateConfirmPassword();
+        updateSubmitButtonState();
+      });
+
+      // Form submission handler
+      form.addEventListener('submit', (e) => {
+        e.preventDefault(); // Prevent default form submission
+
+        // Re-validate all fields one last time on submit (important for initial load or skipped fields)
+        if (validateAllFields()) {
+          // If all validations pass, process the form data
+          const formData = new FormData(form); // Get form data directly from the form element
+          const data = Object.fromEntries(formData.entries()); // Convert to a plain object
+          console.log('Form Submitted Successfully:', data);
+
+          // Here you would typically send data to a server using fetch() or XMLHttpRequest
+          alert('Form Submitted! Check console for data.');
+          // form.reset(); // Optionally reset the form after successful submission
+        } else {
+          console.log('Form has validation errors.');
+          // Optionally scroll to the first invalid field or highlight it more
+        }
+      });
+
+      // Initial validation check on page load to set button state correctly
+      // This ensures the button is disabled even if the user does nothing.
+      // It also handles cases where browser autofill might populate fields.
+      document.addEventListener('DOMContentLoaded', updateSubmitButtonState);
+
+    </script>
+  </body>
+
+</html>
