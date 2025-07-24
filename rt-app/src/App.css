@@ -1,0 +1,111 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+
+  box-sizing: border-box;
+
+
+}
+
+body {
+  height: 100vh;
+  background-color: teal;
+}
+
+.badge {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 75px;
+
+  min-width: 500px;
+
+  border: solid white 2px;
+
+
+  & form {
+    min-width: 85%;
+  }
+
+
+  & .field-organizer {
+
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    padding: 1rem 2rem;
+
+    & label {
+      margin-bottom: 9px;
+    }
+
+  }
+
+  fieldset {
+
+    width: inherit;
+    border: solid rgb(233, 230, 230) 2px;
+
+    border-radius: 5px;
+
+
+
+
+    & select, input {
+      padding: 5px 10px;
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+
+    & button {
+      width: 100%;
+
+      padding: 1.25rem 0;
+
+      background-color: rgb(10, 12, 24);
+
+      border-radius: 5px;
+      cursor: pointer;
+      border: 1px solid white;
+
+
+    }
+
+  }
+}
+
+
+input#required {
+
+  width: fit-content;
+
+  margin-left: 1rem;
+
+}
+
+
+.pagesContainer {
+
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+
+}
+
+
+a.active {
+  text-decoration: none;
+  color: white;
+}
+
+
+
