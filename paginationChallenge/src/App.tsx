@@ -4,13 +4,18 @@ import "./App.css";
 
 const api = "https://jsonplaceholder.typicode.com/posts";
 
+type Post = {
+	id: number;
+	title: string;
+};
+
 export default function App() {
-	const [data, setData] = React.useState([]);
+	const [data, setData] = React.useState<Post[]>([]);
 	const [loading, setLoading] = React.useState(false);
 	const [filter, setFilter] = React.useState("");
-	const [refinedResults, setRefinedResults] = React.useState(data);
+	const [refinedResults, setRefinedResults] = React.useState<Post[]>([]);
 
-	function handleFilter(e) {
+	function handleFilter(e: React.ChangeEvent<HTMLInputElement>) {
 		setFilter(() => e.target.value);
 
 		const filteredData = [...data].filter((item) =>
@@ -20,7 +25,7 @@ export default function App() {
 		setRefinedResults(filteredData);
 	}
 
-	function makeActive(e) {
+	function makeActive(e: React.MouseEvent<HTMLAnchorElement>) {
 		const anchorList = document.querySelectorAll("a[role='page']");
 
 		console.log(anchorList);
@@ -38,7 +43,7 @@ export default function App() {
 	const noOfPages = Math.ceil(data.length / 10);
 
 	const handlePageClickCallback = useCallback(
-		(e, number: number = 1) => {
+		(e: React.MouseEvent<HTMLAnchorElement> | null, number: number = 1) => {
 			if (e) e.preventDefault();
 			const newResults = [...data].slice(number * 10 - 10, number * 10);
 			setRefinedResults(newResults);
@@ -55,10 +60,14 @@ export default function App() {
 				if (!response.ok) {
 					throw new Error(`HTTP error! status: ${response.status}`);
 				}
-				const responseData = await response.json();
+				const responseData: Post[] = await response.json();
 				setData(responseData);
-			} catch (e) {
-				console.error("Error fetching data:", e.message);
+			} catch (e: unknown) {
+				if (e instanceof Error) {
+					console.error("Error fetching data:", e.message);
+				} else {
+					console.error("An unknown error occurred:", e);
+				}
 			} finally {
 				setLoading(false);
 			}
@@ -81,7 +90,7 @@ export default function App() {
 			<input
 				type="text"
 				name="filter"
-				id="fitler"
+				id="filter"
 				value={filter}
 				onChange={handleFilter}
 			/>
@@ -109,7 +118,11 @@ export default function App() {
 	);
 }
 
-function Data({ childItem }) {
+type DataProps = {
+	childItem: Post;
+};
+
+function Data({ childItem }: DataProps) {
 	const { title } = childItem;
 	return (
 		<div>
