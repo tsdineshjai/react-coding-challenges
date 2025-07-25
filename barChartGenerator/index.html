@@ -42,6 +42,11 @@
         align-items: end;
 
 
+        & div {
+          margin-right: 5px;
+        }
+
+
       }
 
       button {
@@ -81,17 +86,17 @@
       const barGenBtn = document.getElementById("bar-gen-btn");
 
       let previousColor;
+
       function randomColorGenerator() {
-
         const colors = ["orange", "red", "green", "deeppink", "deepskyblue", "teal", "steelblue"];
-        const maxIndex = colors.length - 1;
-        const minIndex = 0;
-        const randomIndex = Math.floor(Math.random() * (maxIndex - minIndex + 1) + minIndex);
-
-        if (previousColor == colors[randomIndex]) {
-          return colors[randomIndex + 1]
-        }
-        return colors[randomIndex]
+        let newColor;
+        //keep on generting the color untill there comes out a new Color ! 
+        do {
+          const randomIndex = Math.floor(Math.random() * colors.length);
+          newColor = colors[randomIndex];
+        } while (newColor == previousColor);
+        previousColor = newColor;
+        return newColor;
       }
 
 
@@ -99,13 +104,26 @@
 
         e.preventDefault();
         const barValues = chartValues?.value;
+
+        if (!barValues.trim()) { // Check if the input is empty or just whitespace
+          chartContainer.innerHTML = ''; // Clear existing chart if input is empty
+          return;
+        }
         const chartArray = barValues.split(",");
 
-        chartValues.innerHTML = null;
+        chartContainer.innerHTML = null;
 
         chartArray.forEach((chart) => {
+
+          const barValue = Number(chart);
+          console.log(barValue)
+          if (isNaN(barValue)) {
+            console.warn(`Skipping invalid value: ${chart}`);
+            return;
+          }
           const bar = document.createElement("div");
-          bar.style.height = (+chart + 20) + "px";
+
+          bar.style.height = barValue + "px";
           const randomColor = randomColorGenerator()
           bar.style.width = "20px"; bar.style.backgroundColor = randomColor;
           previousColor = randomColor;
