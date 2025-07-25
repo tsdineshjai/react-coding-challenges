@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bar Chart GEnerator</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        height: 90vh;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+        gap: 2rem;
+        margin-top: 5rem;
+      }
+
+      .input-chart-values {
+        margin: 0 auto;
+
+        & input {
+          padding: 1rem 2rem;
+          border-radius: 22px;
+          color: darkblue;
+          font-weight: 500;
+        }
+      }
+
+      .chart-conatiner {
+        display: flex;
+        justify-content: center;
+        border: 1px solid green;
+        min-height: 800px;
+        background-color: rgb(14, 18, 7);
+        align-items: end;
+
+
+      }
+
+      button {
+        padding: 1rem 2rem;
+        border-radius: 22px;
+
+        &:hover {
+          cursor: pointer;
+          transform: scaleX(1.01);
+          background-color: rgb(175, 171, 171);
+        }
+
+      }
+    </style>
+  </head>
+
+  <body>
+
+
+    <div class="input-chart-values">
+      <input type="text" name="chart-values" id="chart-values">
+
+      <button id="bar-gen-btn" type="button">Generate Bar Charts</button>
+    </div>
+
+
+    <div class="chart-conatiner">
+    </div>
+
+
+
+    <script>
+
+      const chartContainer = document.querySelector(".chart-conatiner")
+      const chartValues = document.getElementById("chart-values");
+
+      const barGenBtn = document.getElementById("bar-gen-btn");
+
+      let previousColor;
+      function randomColorGenerator() {
+
+        const colors = ["orange", "red", "green", "deeppink", "deepskyblue", "teal", "steelblue"];
+        const maxIndex = colors.length - 1;
+        const minIndex = 0;
+        const randomIndex = Math.floor(Math.random() * (maxIndex - minIndex + 1) + minIndex);
+
+        if (previousColor == colors[randomIndex]) {
+          return colors[randomIndex + 1]
+        }
+        return colors[randomIndex]
+      }
+
+
+      barGenBtn.addEventListener("mousedown", (e) => {
+
+        e.preventDefault();
+        const barValues = chartValues?.value;
+        const chartArray = barValues.split(",");
+
+        chartValues.innerHTML = null;
+
+        chartArray.forEach((chart) => {
+          const bar = document.createElement("div");
+          bar.style.height = (+chart + 20) + "px";
+          const randomColor = randomColorGenerator()
+          bar.style.width = "20px"; bar.style.backgroundColor = randomColor;
+          previousColor = randomColor;
+          chartContainer.appendChild(bar);
+        })
+        chartValues.value = "";
+        chartValues.focus();
+      })
+
+
+
+
+
+
+    </script>
+
+  </body>
+
+</html>
