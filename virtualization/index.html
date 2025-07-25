@@ -1,0 +1,148 @@
+<!-- 
+Problem :
+Description: Simulate a very long list of items (e.g., 1000+ items). Instead of rendering all items at once (which would be slow),
+ implement a basic "virtualization" technique: only render the items currently visible in the viewport, plus a few buffer items above and below. 
+As the user scrolls, dynamically update which items are rendered and their positions to give the illusion of a continuous scroll.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtualized List</title>
+    <style>
+      * {
+        scroll-behavior: smooth;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+
+      #virtualContainer {
+        height: 500px;
+        overflow-y: scroll;
+
+        border: 1px solid #ccc;
+        position: relative;
+        font-family: Arial, sans-serif;
+      }
+
+      #scrollContent {
+        /* This div will determine the scroll height, but won't hold all items */
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .list-item {
+        position: absolute;
+        width: 100%;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgb(205, 187, 187);
+        color: rgb(185, 20, 20);
+        padding: 5px 0;
+
+      }
+
+      .list-item:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Virtualized List</h1>
+    <div id="virtualContainer">
+      <div id="scrollContent">
+        hello
+      </div>
+    </div>
+
+    <div class="parent">
+      <div class="child">
+        <div class="grandChild"></div>
+      </div>
+    </div>
+    <script>
+
+
+
+      const itemHeight = 61;
+      const totalItems = 1000;
+      const bufferItems = 5;
+
+      const virtualContainer = document.getElementById("virtualContainer");
+      const scrollContent = document.getElementById("scrollContent");
+
+
+      scrollContent.style.height = (totalItems * itemHeight) + "px";
+      scrollContent.style.backgroundColor = "deepPink";
+      scrollContent.style.color = "white";
+
+
+      function renderVisibleItems() {
+        let startIndex = Math.floor(virtualContainer.scrollTop / itemHeight);
+        const endIndex = Math.min(startIndex + Math.ceil(virtualContainer.clientHeight / itemHeight) + bufferItems * 2, totalItems);
+        startIndex = Math.max(0, startIndex - bufferItems);
+
+
+        //we have to delete the already rendered lists. before adding the new ones 
+        scrollContent.innerHTML = '';
+        for (let i = startIndex; i <= endIndex; i++) {
+          const div = document.createElement('div');
+          div.textContent = `item ${i}`;
+          div.style.top = (i * itemHeight) + "px";
+          div.classList.add("list-item");
+          scrollContent.appendChild(div);
+        }
+      }
+
+      renderVisibleItems();
+
+
+      function debounce(fn, delay) {
+        let timerID;
+        return (...args) => {
+          clearTimeout(timerID);
+          timerID = setTimeout(() => {
+            fn(...args)
+          }, delay)
+        }
+      }
+
+
+      const debouncedRenderVisisbleItems = debounce(renderVisibleItems, 150);
+
+      virtualContainer.addEventListener("scroll", debouncedRenderVisisbleItems);
+
+
+
+
+    </script>
+  </body>
+
+</html>
+
+
+
+
+<!-- 
+Notes :
+Virtualization in JavaScript (especially in the context of web development) is a performance optimization technique 
+used when rendering large lists or grids of elements (like items in a scrollable view). 
+Instead of rendering all the items at once in the DOM, it only renders the items visible 
+in the viewport (plus a small buffer), and dynamically loads/unloads items as the user scrolls.
+🧠 Why Use Virtualization?
+Rendering hundreds or thousands of DOM elements can significantly slow down the browser, 
+increase memory usage, and affect user experience. Virtualization avoids this by rendering only what’s needed.
+-->
