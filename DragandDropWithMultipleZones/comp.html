@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag and Drop Zones</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        height: 80vh;
+        display: flex;
+        justify-content: center;
+        margin-top: 100px;
+        padding: 0 100px;
+        border: 1px solid #ccc;
+        gap: 2rem;
+      }
+
+      .zoneA,
+      .zoneB {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+        border: 1px solid grey;
+        max-height: 300px;
+        padding: 1rem 2rem;
+        align-items: center;
+        width: 200px;
+        /* Added fixed width for better layout */
+        overflow-y: auto;
+        /* Allow scrolling if content exceeds max-height */
+      }
+
+      .zoneA div,
+      .zoneB div {
+        padding: 0.5rem 0.75rem;
+        margin-top: 5px;
+        border-radius: 3px;
+        transition: all 0.2s ease-in;
+        width: 100%;
+        /* Make items fill container width */
+      }
+
+      .zoneA div:hover,
+      .zoneB div:hover {
+        transform: scale(1.05);
+        /* Slightly less aggressive scale for better UX */
+        cursor: grab;
+        /* Indicate draggable */
+      }
+
+      /* Styles for the item being dragged */
+      .list-item.dragging {
+        opacity: 0.5;
+        border: 2px dashed #000;
+      }
+
+      /* Styles for the placeholder when dragging over */
+      .zoneA .placeholder,
+      .zoneB .placeholder {
+        height: 50px;
+        /* Example height, adjust as needed */
+        width: 100%;
+        background-color: lightgray;
+        border: 1px dashed darkgray;
+        margin-top: 5px;
+      }
+
+      /* Original item colors */
+      .yellow {
+        background-color: yellow;
+      }
+
+      .blue {
+        background-color: deepskyblue;
+      }
+
+      .red {
+        background-color: rgb(174, 58, 58);
+        color: white;
+      }
+
+      .pink {
+        background-color: deeppink;
+      }
+
+      .steelblue {
+        background-color: steelblue;
+      }
+
+      .green {
+        background-color: rgb(7, 86, 7);
+        color: white;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div class="zoneA">
+      <h2>Zone A</h2>
+      <div role="dragItem" draggable="true" id="apple" class="list-item yellow">Apple</div>
+      <div role="dragItem" draggable="true" id="orange" class="list-item blue">Orange</div>
+      <div role="dragItem" draggable="true" id="musk-melon" class="list-item red">Musk Melon</div>
+    </div>
+
+
+    <div class="zoneB">
+      <h2>Zone B</h2>
+      <div role="dragItem" draggable="true" id="pear" class="list-item pink">Pear</div>
+      <div role="dragItem" draggable="true" id="grapes" class="list-item steelblue">Grapes</div>
+      <div role="dragItem" draggable="true" id="dragon" class="list-item green">Dragon</div>
+    </div>
+
+    <script>
+      const zones = document.querySelectorAll('.zoneA, .zoneB');
+      let draggedItem = null; // Store the currently dragged item
+
+      // Function to find the element after which the dragged item should be inserted
+      function getDragAfterElement(container, y) {
+        // Get all draggable elements in the container that are NOT the one currently being dragged
+        const draggableElements = [...container.querySelectorAll("div[role='dragItem']:not(.dragging)")];
+
+        return draggableElements.reduce((closest, child) => {
+          console.log("closest element is ", closest)
+          const box = child.getBoundingClientRect();
+          // Calculate the offset from the center of the child element
+          const offset = y - box.top - box.height / 2;
+          // If the offset is negative (mouse is above the center) and closer to 0 than previous closest
+          if (offset < 0 && offset > closest.offset) {
+            return {
+              offset: offset,
+              element: child
+            };
+          } else {
+            return closest;
+          }
+        }, {
+          offset: -Number.MAX_VALUE, // Start with a very small offset to ensure first check works
+          element: null
+        }).element;
+      }
+
+      // Add dragstart and dragend listeners to all draggable items
+      document.querySelectorAll("div[role='dragItem']").forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+          draggedItem = item;
+          item.classList.add('dragging'); // Add class for visual feedback
+          e.dataTransfer.effectAllowed = 'move'; // Define the allowed drag effect
+          e.dataTransfer.setData('text/plain', item.id); // Set data (useful for fallbacks or other logic)
+        });
+
+        item.addEventListener('dragend', () => {
+          if (draggedItem) {
+            draggedItem.classList.remove('dragging'); // Remove dragging class
+            draggedItem = null; // Clear the dragged item reference
+          }
+          // Clean up any temporary placeholders if they exist
+          const existingPlaceholder = document.querySelector('.placeholder');
+          if (existingPlaceholder) {
+            existingPlaceholder.remove();
+          }
+        });
+      });
+
+      // Add drag event listeners to each zone
+      zones.forEach(zone => {
+        zone.addEventListener('dragover', (e) => {
+          e.preventDefault(); // Essential to allow dropping
+          const afterElement = getDragAfterElement(zone, e.clientY);
+          const currentDraggedItem = document.querySelector('.dragging');
+
+          // Visual feedback: remove existing placeholder and add new one
+          const existingPlaceholder = zone.querySelector('.placeholder');
+          if (existingPlaceholder) {
+            existingPlaceholder.remove();
+          }
+
+          if (currentDraggedItem) {
+            const placeholder = document.createElement('div');
+            placeholder.classList.add('placeholder');
+
+            if (afterElement == null) {
+              // Append to the end if no element is found after
+              zone.appendChild(placeholder);
+            } else {
+              // Insert before the identified element
+              zone.insertBefore(placeholder, afterElement);
+            }
+          }
+        });
+
+        zone.addEventListener('dragleave', () => {
+          // Remove placeholder if dragged item leaves the zone
+          const existingPlaceholder = zone.querySelector('.placeholder');
+          if (existingPlaceholder) {
+            existingPlaceholder.remove();
+          }
+        });
+
+        zone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          const existingPlaceholder = zone.querySelector('.placeholder');
+          if (existingPlaceholder) {
+            existingPlaceholder.replaceWith(draggedItem); // Replace placeholder with the actual item
+          } else if (draggedItem && !zone.contains(draggedItem)) {
+            // If dropping into an empty zone or at the end without a placeholder (less common with dragover logic)
+            zone.appendChild(draggedItem);
+          }
+
+          if (draggedItem) {
+            draggedItem.classList.remove('dragging');
+            draggedItem = null;
+          }
+        });
+      });
+    </script>
+  </body>
+
+</html>

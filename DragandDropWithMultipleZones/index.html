@@ -1,0 +1,190 @@
+<!-- 
+ Expand on the previous drag-and-drop. Create two separate div elements, acting as "zones" or "containers."
+
+ Allow users to drag div elements (items) from one zone and drop them into another,
+
+ reordering them within the target zone. The items should visually move between zones.
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+
+      }
+
+      body {
+
+        height: 80vh;
+        display: flex;
+        justify-content: center;
+        margin-top: 100px;
+        padding: 0 100px;
+        border: 1px solid #ccc;
+        gap: 2rem;
+      }
+
+      .zoneA,
+      .zoneB {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+        border: 1px solid grey;
+        max-height: 300px;
+        padding: 1rem 2rem;
+        align-items: center;
+        justify-content: center;
+
+
+        & div {
+
+          padding: 0.5rem 0.75rem;
+          margin-top: 5px;
+          border-radius: 3px;
+          transition: all 0.2s ease-in;
+
+
+          &:hover {
+            transform: scale(1.1);
+            cursor: pointer;
+          }
+
+          &.yellow {
+            background-color: yellow;
+          }
+
+          &.blue {
+            background-color: deepskyblue;
+          }
+
+          &.red {
+            background-color: rgb(174, 58, 58);
+            color: white;
+          }
+
+          &.pink {
+
+            background-color: deeppink;
+          }
+
+          &.steelblue {
+
+            background-color: steelblue;
+          }
+
+          &.green {
+
+            background-color: rgb(7, 86, 7);
+            color: white;
+          }
+
+
+        }
+    </style>
+  </head>
+
+  <body>
+
+    <div class="zoneA">
+
+      <div role="dragItem" draggable="true" id="apple" class="list-item yellow">Apple</div>
+      <div role="dragItem" draggable="true" id="orange" class="list-item blue">Orange</div>
+      <div role="dragItem" draggable="true" id="musk-melon" class="list-item red">Musk Melon</div>
+    </div>
+
+
+    <div class="zoneB">
+
+      <div role="dragItem" draggable="true" id="pear" class="list-item pink">Pear</div>
+      <div role="dragItem" draggable="true" id="grapes" class="list-item steelblue">Grapes</div>
+      <div role="dragItem" draggable="true" id="dragon" class="list-item green">Dragon</div>
+    </div>
+
+
+
+  </body>
+
+
+  <script>
+
+
+    const listItems = document.querySelectorAll("div[role='dragItem']");
+
+    const zoneA = document.querySelector(".zoneA");
+    const zoneB = document.querySelector(".zoneB");
+
+
+    function handleDragStart(e) {
+      let sourceDragItem = this;
+      e.dataTransfer.dropEffect = "link"
+      e.dataTransfer.setData("text/plain", this.id)
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+    }
+
+    function handleDragEnd(e) {
+      e.preventDefault();
+    }
+
+    function handleDropZone(e) {
+
+      const id = e.dataTransfer.getData("text/plain");
+      const sourceElement = document.getElementById(id);
+      this.appendChild(sourceElement)
+
+
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      let targetElement = this;
+      const id = e.dataTransfer.getData("text/plain");
+      const sourceElement = document.getElementById(id);
+      const placeHolder = document.createElement("div");
+
+      targetElement.after(sourceElement);
+
+
+      // sourceElement.replaceWith(placeHolder);
+      // /*source element is displaced from the DOM and replaced with placeholder
+      // source element still in the memory as it still reference*/
+      // targetElement.replaceWith(sourceElement);
+      // placeHolder.replaceWith(targetElement);
+
+    }
+    zoneA.addEventListener('dragover', handleDragOver)
+    zoneA.addEventListener('dragend', handleDragEnd)
+    zoneA.addEventListener('drop', handleDropZone)
+
+    zoneB.addEventListener('dragover', handleDragOver)
+    zoneB.addEventListener('dragend', handleDragEnd)
+    zoneB.addEventListener('drop', handleDropZone)
+
+    listItems.forEach(item => {
+      item.addEventListener('dragstart', handleDragStart)
+      item.addEventListener('dragover', handleDragOver)
+      item.addEventListener('dragend', handleDragEnd)
+      item.addEventListener('drop', handleDrop)
+    })
+
+
+
+
+
+
+  </script>
+
+</html>
