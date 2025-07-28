@@ -1,0 +1,213 @@
+<!-- 
+ 
+Description: Create a modal dialog that can be opened by a button. Crucially,
+ it must be fully navigable and dismissible using only the keyboard. This involves:
+
+Trapping keyboard focus inside the modal when it's open.
+
+Closing the modal with the Escape key.
+
+Returning focus to the element that opened the modal when it closes.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modal Dialgo trapping Focus</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      .model-container.hidden {
+        display: none;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .openModal {
+        color: white;
+        background-color: black;
+        padding: 1rem 2rem;
+        transition: transform 0.35s ease-out;
+        cursor: pointer;
+
+        &:hover {
+          transform: scale(1.1);
+        }
+
+        &:focus {
+          outline: 3px solid rgb(2, 58, 11);
+          border: 1px solid green;
+        }
+
+      }
+
+
+
+      .model-container {
+        display: grid;
+        place-items: center;
+        border: 1px solid rgb(209, 181, 181);
+        padding: 1rem 2rem;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgb(51, 83, 83);
+
+        & .closeButton {
+
+          background-color: white;
+          width: fit-content;
+          border-radius: 50%;
+          padding: 0.25rem 0.5rem;
+          position: absolute;
+          right: 5px;
+          margin-top: -15px;
+
+
+          &:hover {
+            cursor: pointer;
+            background-color: black;
+            color: white;
+          }
+        }
+
+        .modal {
+          margin: 2rem 1rem;
+
+          background-color: #efecec;
+          padding: 1.5rem 3rem;
+          display: flex;
+          flex-direction: column;
+          position: relative;
+          border-radius: 22px;
+
+
+
+          & .field-wrapper {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            align-items: center;
+            justify-content: space-between;
+          }
+
+
+        }
+
+
+
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <button class="openModal">Open Model</button>
+    <div class="model-container">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <h2 id="modalTitle">User Information Form</h2>
+        <div class="field-wrapper">
+          <label for="Name">UserName: </label>
+          <input type="text" name="" id="" tabindex="0">
+        </div>
+        <div class="field-wrapper">
+          <label for="Email">Email</label>
+          <input type="email" name="" id="" tabindex="0">
+        </div>
+        <div id="closeX" class="closeButton" tabindex="0">x</div>
+      </div>
+    </div>
+
+
+  </body>
+
+  <script>
+
+
+    const containerRef = document.querySelector(".model-container");
+    const modelRef = document.querySelector(".modal");
+
+    const closeBtn = document.querySelector(".closeButton");
+    const openBtn = document.querySelector(".openModal");
+
+    const inputField = document.querySelector("input");
+
+
+    // Initially hide the modal
+    containerRef.classList.add("hidden");
+
+
+
+    function handleKeydown(e) {
+      if (e.key == 'Escape' && !containerRef.classList.contains("hidden")) {
+        e.preventDefault();
+        containerRef.classList.add("hidden");
+        containerRef.tabIndex = -1;
+        openBtn.focus();
+
+      }
+    }
+
+
+    function handleCloseButton(e) {
+      e.preventDefault();
+      containerRef.classList.add("hidden");
+      containerRef.tabIndex = -1;
+      openBtn.focus();
+    }
+
+    function hanldeOpenModal(e) {
+      e.preventDefault();
+      containerRef.classList.remove("hidden");
+      containerRef.tabIndex = 0;
+      inputField.focus();
+    }
+
+
+    document.addEventListener("keydown", handleKeydown);
+    closeBtn.addEventListener("click", handleCloseButton);
+    openBtn.addEventListener("click", hanldeOpenModal);
+
+
+
+    const focusableElements = modelRef.querySelectorAll("input, .closeButton");
+    const firstEle = focusableElements[0];
+    const lastEle = focusableElements[focusableElements.length - 1];
+
+
+    modelRef.addEventListener("keydown", (e) => {
+      if (e.key == "Tab") {
+        if (e.shiftKey) {
+          if (document.activeElement == firstEle) {
+            e.preventDefault();
+            lastEle.focus();
+          }
+        } else {
+          //Tab
+
+          if (document.activeElement == lastEle) {
+            e.preventDefault();
+            firstEle.focus();
+          }
+        }
+      }
+    });
+
+    // firstEle.focus();
+  </script>
+
+</html>
