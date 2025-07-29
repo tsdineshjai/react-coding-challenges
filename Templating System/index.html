@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Templating</title>
+    <style>
+      #app {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        padding: 20px;
+      }
+
+      .card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        background-color: white;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .card-title {
+        font-size: 1.2em;
+        margin-top: 0;
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      .card-image {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        background-color: #eee;
+        /* Placeholder background */
+      }
+
+      .card-content {
+        padding: 15px;
+        flex-grow: 1;
+      }
+
+
+      .card-description {
+        font-size: 0.9em;
+        color: #555;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <h1>Product Cards</h1>
+    <div id="app">
+
+
+    </div>
+
+
+    <script>
+
+      const cardData = [
+        {
+          title: "Mountain Retreat",
+          description: "Escape to the serene mountains and enjoy breathtaking views and fresh air.",
+          imageUrl:
+            "https://images.unsplash.com/photo-1752880051996-9b116757b970?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        },
+        {
+          title: "Coastal Paradise",
+          description: "Relax on pristine beaches and soak up the sun in this idyllic coastal getaway.",
+          imageUrl:
+            "https://plus.unsplash.com/premium_photo-1753303051854-0e9b97c3c895?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        },
+        {
+          title: "Urban Explorer",
+          description: "Discover the vibrant culture and exciting attractions of the bustling city.",
+          imageUrl:
+            "https://plus.unsplash.com/premium_photo-1753231445664-984412ff405b?q=80&w=2342&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        },
+        {
+          title: "Forest Adventure",
+          description: "Immerse yourself in nature with thrilling hikes and captivating wildlife in the deep forest.",
+          imageUrl:
+            "https://images.unsplash.com/photo-1751468109642-21dd2ec98b91?q=80&w=2342&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        }
+      ];
+
+
+      const cardsContainer = document.getElementById("app")
+
+      function createCardElement(obj) {
+
+        const { title, description, imageUrl } = obj;
+
+        const card = document.createElement("div");
+        card.classList.add("card");
+
+        const h1 = document.createElement("p");
+        h1.classList.add("card-title");
+        h1.textContent = title;
+
+        const desc = document.createElement("p");
+        desc.classList.add("card-description");
+        desc.textContent = description;
+
+        const contentWrapper = document.createElement("div");
+        contentWrapper.classList.add("card-content");
+        contentWrapper.append(h1, desc);
+
+        const image = document.createElement("img");
+        image.classList.add("card-image");
+        image.src = imageUrl;
+
+        card.append(image, contentWrapper);
+
+        return card;
+      }
+
+
+      cardData.forEach(card => {
+
+        const newCard = createCardElement(card);
+
+        cardsContainer.appendChild(newCard);
+      })
+
+
+    </script>
+  </body>
+
+</html>
