@@ -1,0 +1,91 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+video {
+  height: 250px;
+}
+
+.wrapper {
+  border: 2px solid green;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.25rem 0.5rem;
+  width: 80%;
+  border-radius: 22px;
+}
+
+input {
+  color: rgb(38, 4, 4);
+  border: none;
+  outline: none;
+  flex: 1;
+  cursor: pointer;
+}
+
+input::placeholder {
+  color: white;
+}
+
+span {
+  font-size: small;
+  font-weight: 300;
+  text-decoration: underline;
+  background-color: none;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid blue;
+  border-radius: 22px;
+  align-items: center;
+  background-color: rgb(67, 17, 113);
+  color: white;
+  min-height: 200px;
+  /* Adjust as needed */
+  overflow-x: hidden;
+  /* Remove horizontal scrollbar */
+  overflow-y: auto;
+  /* Keep vertical scrollbar */
+  width: 100%;
+  /* Ensure it fits within parent */
+  white-space: normal;
+}
+
+.message-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: start;
+  flex-direction: column;
+  border: 1px solid white;
+  width: 100%;
+  gap: 0.25rem;
+
+  & p:nth-child(even) {
+    color: black;
+    margin-left: auto;
+    padding: 1rem;
+    background-color: aliceblue;
+    max-width: 250px;
+    flex-wrap: wrap;
+    border-radius: 22px;
+    transform: translateX(-100px);
+  }
+
+  & p:nth-child(odd) {
+    color: rgb(241, 225, 225);
+    padding: 1rem;
+    background-color: rgb(5, 40, 70);
+    max-width: 250px;
+    flex-wrap: wrap;
+    border-radius: 22px;
+    transform: translateX(100px);
+  }
+}
