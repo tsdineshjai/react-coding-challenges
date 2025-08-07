@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+
+    <style>
+      body {
+        background: white;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      }
+
+      nav {
+        position: relative;
+        font-size: 1.25rem;
+        margin: auto;
+        align-self: center;
+        display: flex;
+        width: auto;
+      }
+
+      nav a {
+        position: relative;
+        z-index: 1;
+        padding: .5rem;
+        color: black;
+        text-decoration: none;
+        display: inline-block;
+        vertical-align: middle;
+        box-sizing: border-box;
+      }
+
+      nav a:hover {
+        padding: .5rem;
+        text-decoration: none;
+      }
+
+      nav a::after {
+        content: " ";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        box-sizing: border-box;
+      }
+
+      nav a.active::after {
+        border: 2px solid green;
+        view-transition-name: highlight;
+      }
+
+      ::view-transition-old(highlight) {
+        height: 100%;
+      }
+
+      ::view-transition-new(highlight) {
+        height: 100%;
+      }
+    </style>
+
+
+  </head>
+
+  <body>
+
+    <nav>
+      <div id="highlight"></div>
+      <a href="#" class="active">Home</a>
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+
+
+      <div class="test"></div>
+    </nav>
+
+
+
+    <script>
+
+      const navbar = document.querySelector('nav');
+
+      // change the item that has the .active class applied
+      const setActiveElement = (elem) => {
+        document.querySelector('nav a.active').classList.remove('active');
+        elem.classList.add('active');
+      }
+
+      // Start view transition and pass in a callback on click
+      navbar.addEventListener('click', async function (event) {
+        if (!event.target.matches('nav a:not(.active)')) {
+          return;
+        }
+
+        // Fallback for browsers that don't support View Transitions:
+        if (!document.startViewTransition) {
+          setActiveElement(event.target);
+          return;
+        }
+
+        document.startViewTransition(() => setActiveElement(event.target));
+      });
+
+
+
+
+
+    </script>
+  </body>
+
+</html>

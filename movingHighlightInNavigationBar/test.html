@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+
+    <style>
+      body {
+        background: white;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      }
+
+      nav {
+        position: relative;
+        font-size: 1.25rem;
+        margin: auto;
+        display: flex;
+        align-self: center;
+      }
+
+      nav a {
+        z-index: 1;
+        padding: .5rem;
+        color: black;
+        text-decoration: none;
+        display: inline-block;
+        vertical-align: middle;
+        border: 2px solid transparent;
+      }
+
+
+      #highlight {
+
+        z-index: 0;
+        position: absolute;
+        height: 100%;
+        width: 75px;
+        border: 2px solid green;
+        box-sizing: border-box;
+        transition: all 0.32s ease;
+        left: -200px;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <nav>
+      <div id="highlight"></div>
+      <a href="#" class="active">Home</a>
+      <a href="#services">Services</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+
+
+      <div class="test"></div>
+    </nav>
+
+
+
+    <script>
+
+      const navbar = document.querySelector("nav");
+
+      navbar.addEventListener("click", (e) => {
+
+        // return if the clicked element doesn't have the correct selector
+        if (!event.target.matches('nav a:not(active)')) {
+          return;
+        }
+
+        document.querySelector("nav a.active").classList.remove("active");
+        e.target.classList.add("active");
+
+        moveHighlight()
+      })
+
+      function moveHighlight() {
+
+        const activeNavItem = document.querySelector('a.active');
+        const highlighterElement = document.querySelector('#highlight');
+
+        const width = activeNavItem.offsetWidth;
+        const itemPos = activeNavItem.getBoundingClientRect();
+        const navbarPos = navbar.getBoundingClientRect();
+        const relativePosX = itemPos.left - navbarPos.left;
+
+        const styles = {
+
+          left: `${relativePosX}px`,
+          width: `${width}px`
+        }
+
+        Object.assign(highlighterElement.style, styles)
+      }
+
+
+
+
+
+    </script>
+  </body>
+
+</html>
